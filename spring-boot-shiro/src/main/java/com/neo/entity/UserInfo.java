@@ -2,6 +2,7 @@ package com.neo.entity;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.usertype.UserType;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -19,14 +20,21 @@ public class UserInfo implements Serializable {
     @Column(nullable = false, unique =true)
     private String username;//帐号
 
-    private String name;//名称（昵称或者真实姓名，不同系统不同定义）
+    private String email;//邮箱
+
+    private String description;
 
     @Column(nullable = false)
     private String password; //密码;
 
     private String salt;//加密密码的盐
 
-    private byte state;//用户状态,0:创建未认证（比如没有激活，没有输入验证码等等）--等待验证的用户 , 1:正常状态,2：用户被锁定.
+    @Enumerated(EnumType.STRING)
+    private UserStatus state;//用户状态
+
+    // 账号类型，HUMAN_MACHINE:人机账号，MACHINE_MACHINE:机机账号
+    @Enumerated(EnumType.STRING)
+    private UserType type;
 
     @ManyToMany(fetch= FetchType.EAGER)//立即从数据库中进行加载数据;
     @JoinTable(name = "SysUserRole", joinColumns = { @JoinColumn(name = "uid") }, inverseJoinColumns ={@JoinColumn(name = "roleId") })
@@ -40,6 +48,13 @@ public class UserInfo implements Serializable {
 
     @Column
     private String outDate;
+
+    @ElementCollection(fetch = FetchType.EAGER)
+    private List<String> lockedIps; //用户在那些IP被锁定
+
+    // 最大同时在线数, 0表示不限制在线数
+    @Column
+    private int onlineMaxCount;
 
     @Column
     private String validateCode; //验证码
