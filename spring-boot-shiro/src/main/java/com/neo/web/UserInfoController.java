@@ -1,19 +1,22 @@
 package com.neo.web;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 
+@Slf4j
 @Controller
-@RequestMapping("/userInfo")
+@RequestMapping("/userManagement/users")
 public class UserInfoController {
 
     /**
      * 用户查询.
      * @return
      */
-    @RequestMapping("/userList")
-    @RequiresPermissions("userInfo:view")//权限管理;
+    @RequestMapping(value = "/", method = RequestMethod.GET)
+    //@RequiresPermissions("userInfo:view")//权限管理;
     public String userInfo(){
         return "userInfo";
     }
@@ -23,7 +26,7 @@ public class UserInfoController {
      * @return
      */
     @RequestMapping("/userAdd")
-    @RequiresPermissions("userInfo:add")//权限管理;
+    //@RequiresPermissions("userInfo:add")//权限管理;
     public String userInfoAdd(){
         return "userInfoAdd";
     }
@@ -33,7 +36,7 @@ public class UserInfoController {
      * @return
      */
     @RequestMapping("/userDel")
-    @RequiresPermissions("userInfo:del")//权限管理;
+    //@RequiresPermissions("userInfo:del")//权限管理;
     public String userDel(){
         return "userInfoDel";
     }

@@ -1,7 +1,7 @@
 package com.neo.config;
 
-import com.neo.entity.SysPermission;
-import com.neo.entity.SysRole;
+import com.neo.entity.Permission;
+import com.neo.entity.Role;
 import com.neo.entity.UserInfo;
 import com.neo.sevice.UserInfoService;
 import org.apache.shiro.authc.AuthenticationException;
@@ -24,10 +24,10 @@ public class MyShiroRealm extends AuthorizingRealm {
         System.out.println("权限配置-->MyShiroRealm.doGetAuthorizationInfo()");
         SimpleAuthorizationInfo authorizationInfo = new SimpleAuthorizationInfo();
         UserInfo userInfo  = (UserInfo)principals.getPrimaryPrincipal();
-        for(SysRole role:userInfo.getRoleList()){
-            authorizationInfo.addRole(role.getRole());
-            for(SysPermission p:role.getPermissions()){
-                authorizationInfo.addStringPermission(p.getPermission());
+        for(Role role:userInfo.getRoleList()){
+            authorizationInfo.addRole(role.getName());
+            for(Permission p:role.getPermissions()){
+                authorizationInfo.addStringPermission(p.getPrivilege());
             }
         }
         return authorizationInfo;
