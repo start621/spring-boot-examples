@@ -2,7 +2,6 @@ package com.neo.entity;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.usertype.UserType;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -15,7 +14,7 @@ import java.util.List;
 public class UserInfo implements Serializable {
     @Id
     @GeneratedValue
-    private Integer uid;
+    private Integer id;
 
     @Column(nullable = false, unique =true)
     private String username;//帐号
@@ -27,7 +26,7 @@ public class UserInfo implements Serializable {
     @Column(nullable = false)
     private String password; //密码;
 
-    private String salt;//加密密码的盐
+    // private String salt;//加密密码的盐
 
     @Enumerated(EnumType.STRING)
     private UserStatus state;//用户状态
@@ -37,7 +36,8 @@ public class UserInfo implements Serializable {
     private UserType type;
 
     @ManyToMany(fetch= FetchType.EAGER)//立即从数据库中进行加载数据;
-    @JoinTable(name = "SysUserRole", joinColumns = { @JoinColumn(name = "uid") }, inverseJoinColumns ={@JoinColumn(name = "roleId") })
+    @JoinTable(name = "SysUserRole", joinColumns = { @JoinColumn(name = "uid") },
+            inverseJoinColumns ={@JoinColumn(name = "roleId") })
     private List<Role> roleList;// 一个用户具有多个角色
 
     @Column(nullable = false)
@@ -49,7 +49,7 @@ public class UserInfo implements Serializable {
     @Column
     private String outDate;
 
-    @ElementCollection(fetch = FetchType.EAGER)
+    @ElementCollection
     private List<String> lockedIps; //用户在那些IP被锁定
 
     // 最大同时在线数, 0表示不限制在线数
@@ -63,8 +63,8 @@ public class UserInfo implements Serializable {
      * 密码盐.
      * @return ddd
      */
-    public String getCredentialsSalt(){
-        return this.username+this.salt;
-    }
+    // public String getCredentialsSalt(){
+        // return this.username+this.salt;
+    // }
     //重新对盐重新进行了定义，用户名+salt，这样就更加不容易被破解
 }
