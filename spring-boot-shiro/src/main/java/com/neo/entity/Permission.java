@@ -22,7 +22,7 @@ public class Permission implements Serializable {
     private String privilege; //权限字符串, module:action_type, menu例子：role:*，button例子：role:create,role:update,role:delete,role:view
 
     @ManyToMany
-    @JoinTable(name="SysRolePermission",joinColumns={@JoinColumn(name="permissionId")},inverseJoinColumns={@JoinColumn(name="roleId")})
+    @JoinTable(name="role_permission",joinColumns={@JoinColumn(name="permission_id")},inverseJoinColumns={@JoinColumn(name="role_id")})
     private List<Role> roles;
 
     private Long parentId; //父编号

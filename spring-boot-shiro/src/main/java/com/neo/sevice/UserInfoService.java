@@ -58,7 +58,7 @@ public interface UserInfoService {
     public List<UserInfo> findByLockedIpsNotNull();
 
     // 根据邮箱或用户名查询用户
-    public List<UserInfo> findByUsernameOrEmailIgnoreCase(String option);
+    public List<UserInfo> findByUsernameOrEmailIgnoreCase(String usernanme, String email);
 
     // 查询邮箱为126邮箱的用户
     public List<UserInfo> findByEmailEndingWith(String emailEnding);
@@ -73,7 +73,7 @@ public interface UserInfoService {
     /**
      * 限制查询
      */
-    public  List<UserInfo> findTop10ByUsernameOrderById(String option);
+    public  List<UserInfo> findTop10ByUsernameOrderById(String username);
     /**
      * 自定义SQL查询
      */

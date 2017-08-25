@@ -8,12 +8,13 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
 @Slf4j
-@Controller
-@RequestMapping("/userManagement/users")
+@RestController
+@RequestMapping("/userManagement")
 public class UserInfoController {
 
     @Autowired
@@ -23,9 +24,10 @@ public class UserInfoController {
      * 用户查询.
      * @return all user_info
      */
-    @RequestMapping(value = "/", method = RequestMethod.GET)
+    @RequestMapping(value = "/users", method = RequestMethod.GET)
     //@RequiresPermissions("userInfo:view")//权限管理;
     public List<UserInfo> getAllUsers(){
+        log.info("---> 入口");
         return userService.findAll();
     }
 
@@ -34,7 +36,7 @@ public class UserInfoController {
      * @param userInfoList 输入用户信息
      * @return 新建用户信息
      */
-    @RequestMapping(value = "/", method = RequestMethod.POST)
+    @RequestMapping(value = "/users", method = RequestMethod.POST)
     public List<UserInfo> createUsers(List<UserInfo> userInfoList) {
         return userService.BatchCreate(userInfoList);
     }
@@ -42,7 +44,7 @@ public class UserInfoController {
     /**
      * 批量删除用户
      */
-    @RequestMapping(value = "/", method = RequestMethod.DELETE)
+    @RequestMapping(value = "/users", method = RequestMethod.DELETE)
     public void deleteUsers(){
         userService.batchDelete();
     }
@@ -50,19 +52,19 @@ public class UserInfoController {
      * 用户添加;
      * @return 返回新建用户名
      */
-    @RequestMapping(value = "/user", method = RequestMethod.POST)
+    @RequestMapping(value = "/users/user", method = RequestMethod.POST)
     //@RequiresPermissions("userInfo:add")//权限管理;
     public String userInfoAdd(UserInfo userInfo){
         return userService.create(userInfo).getUsername();
     }
 
-    @RequestMapping(value = "/user", method = RequestMethod.PUT)
+    @RequestMapping(value = "/users/user", method = RequestMethod.PUT)
     //@RequiresPermissions("userInfo:add")//权限管理;
     public String userInfoUpdate(UserInfo userInfo){
         return userService.update(userInfo).getUsername();
     }
 
-    @RequestMapping(value = "/{username}", method = RequestMethod.GET)
+    @RequestMapping(value = "/users/{username}", method = RequestMethod.GET)
     public UserInfo getUserInfo(@PathVariable String username) {
         return  userService.findByUsername(username);
     }
@@ -70,7 +72,7 @@ public class UserInfoController {
      * 用户删除;
      * @return message
      */
-    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
+    @RequestMapping(value = "/users/{id}", method = RequestMethod.DELETE)
     //@RequiresPermissions("userInfo:del")//权限管理;
     public String  userInfoDel(@PathVariable String id){
         userService.delete(id);

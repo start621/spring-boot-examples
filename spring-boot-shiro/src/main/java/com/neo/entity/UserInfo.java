@@ -36,14 +36,14 @@ public class UserInfo implements Serializable {
     private UserType type;
 
     @ManyToMany(fetch= FetchType.EAGER)//立即从数据库中进行加载数据;
-    @JoinTable(name = "SysUserRole", joinColumns = { @JoinColumn(name = "uid") },
-            inverseJoinColumns ={@JoinColumn(name = "roleId") })
+    @JoinTable(name = "user_role", joinColumns = { @JoinColumn(name = "user_id") },
+            inverseJoinColumns ={@JoinColumn(name = "role_id") })
     private List<Role> roleList;// 一个用户具有多个角色
 
-    @Column(nullable = false)
+    @Column //(nullable = false)
     private Date createTime;
 
-    @Column(nullable = false)
+    @Column  //(nullable = false)
     private Date lastModifyTime;
 
     @Column

@@ -3,19 +3,22 @@ package com.neo.sevice.impl;
 import com.neo.dao.UserInfoDao;
 import com.neo.entity.UserInfo;
 import com.neo.sevice.UserInfoService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.Resource;
 import java.util.List;
 
 @Service
 public class UserInfoServiceImpl implements UserInfoService {
-    @Resource
+
+    @Autowired
     private UserInfoDao userInfoDao;
+
+    private static final int DEFAULT_MAX_ONLINE = 5;
 
     @Override
     public UserInfo findByUsername(String username) {
@@ -60,7 +63,8 @@ public class UserInfoServiceImpl implements UserInfoService {
 
     @Override
     public List<UserInfo> findByOnlineMaxCountGreaterThan() {
-        return userInfoDao.findByOnlineMaxCountGreaterThan();
+
+        return userInfoDao.findByOnlineMaxCountGreaterThan(DEFAULT_MAX_ONLINE);
     }
 
     @Override
@@ -69,8 +73,8 @@ public class UserInfoServiceImpl implements UserInfoService {
     }
 
     @Override
-    public List<UserInfo> findByUsernameOrEmailIgnoreCase(String option) {
-        return userInfoDao.findByUsernameOrEmailIgnoreCase(option);
+    public List<UserInfo> findByUsernameOrEmailIgnoreCase(String usernanme, String email) {
+        return userInfoDao.findByUsernameOrEmailIgnoreCase(usernanme, email);
     }
 
     @Override
@@ -103,7 +107,7 @@ public class UserInfoServiceImpl implements UserInfoService {
     }
 
     @Override
-    public List<UserInfo> findTop10ByUsernameOrderById(String option) {
-        return userInfoDao.findTop10ByUsernameOrderById(option);
+    public List<UserInfo> findTop10ByUsernameOrderById(String username) {
+        return userInfoDao.findTop10ByUsernameOrderById(username);
     }
 }
