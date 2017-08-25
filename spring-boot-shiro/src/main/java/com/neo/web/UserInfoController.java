@@ -4,11 +4,7 @@ import com.neo.entity.UserInfo;
 import com.neo.sevice.UserInfoService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -37,7 +33,7 @@ public class UserInfoController {
      * @return 新建用户信息
      */
     @RequestMapping(value = "/users", method = RequestMethod.POST)
-    public List<UserInfo> createUsers(List<UserInfo> userInfoList) {
+    public List<UserInfo> createUsers(@RequestBody List<UserInfo> userInfoList) {
         return userService.BatchCreate(userInfoList);
     }
 
@@ -54,13 +50,14 @@ public class UserInfoController {
      */
     @RequestMapping(value = "/users/user", method = RequestMethod.POST)
     //@RequiresPermissions("userInfo:add")//权限管理;
-    public String userInfoAdd(UserInfo userInfo){
+    public String userInfoAdd(@RequestBody UserInfo userInfo){
+        log.info("---> user add");
         return userService.create(userInfo).getUsername();
     }
 
     @RequestMapping(value = "/users/user", method = RequestMethod.PUT)
     //@RequiresPermissions("userInfo:add")//权限管理;
-    public String userInfoUpdate(UserInfo userInfo){
+    public String userInfoUpdate(@RequestBody UserInfo userInfo){
         return userService.update(userInfo).getUsername();
     }
 

@@ -2,6 +2,8 @@ package com.neo.entity;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -10,27 +12,33 @@ import java.util.List;
 
 @Data
 @NoArgsConstructor
+@RequiredArgsConstructor
 @Entity
 public class UserInfo implements Serializable {
     @Id
     @GeneratedValue
     private Integer id;
 
+    @NonNull
     @Column(nullable = false, unique =true)
     private String username;//帐号
 
+    @NonNull
     private String email;//邮箱
 
+    @NonNull
     private String description;
 
+    @NonNull
     @Column(nullable = false)
     private String password; //密码;
 
     // private String salt;//加密密码的盐
-
+    @NonNull
     @Enumerated(EnumType.STRING)
     private UserStatus state;//用户状态
 
+    @NonNull
     // 账号类型，HUMAN_MACHINE:人机账号，MACHINE_MACHINE:机机账号
     @Enumerated(EnumType.STRING)
     private UserType type;
@@ -40,14 +48,16 @@ public class UserInfo implements Serializable {
             inverseJoinColumns ={@JoinColumn(name = "role_id") })
     private List<Role> roleList;// 一个用户具有多个角色
 
+    @NonNull
     @Column //(nullable = false)
     private Date createTime;
 
+    @NonNull
     @Column  //(nullable = false)
     private Date lastModifyTime;
 
     @Column
-    private String outDate;
+    private int outDate;
 
     @ElementCollection
     private List<String> lockedIps; //用户在那些IP被锁定
