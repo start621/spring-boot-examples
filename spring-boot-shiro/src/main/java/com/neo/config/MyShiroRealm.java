@@ -3,11 +3,10 @@ package com.neo.config;
 import com.neo.entity.Permission;
 import com.neo.entity.Role;
 import com.neo.entity.UserInfo;
+import com.neo.entity.UserStatus;
 import com.neo.sevice.UserInfoService;
-import org.apache.shiro.authc.AuthenticationException;
-import org.apache.shiro.authc.AuthenticationInfo;
-import org.apache.shiro.authc.AuthenticationToken;
-import org.apache.shiro.authc.SimpleAuthenticationInfo;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.shiro.authc.*;
 import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.authz.SimpleAuthorizationInfo;
 import org.apache.shiro.realm.AuthorizingRealm;
@@ -15,6 +14,7 @@ import org.apache.shiro.subject.PrincipalCollection;
 
 import javax.annotation.Resource;
 
+@Slf4j
 public class MyShiroRealm extends AuthorizingRealm {
     @Resource
     private UserInfoService userInfoService;
@@ -36,24 +36,38 @@ public class MyShiroRealm extends AuthorizingRealm {
     @Override
     protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken token)
             throws AuthenticationException {
-        System.out.println("MyShiroRealm.doGetAuthenticationInfo()");
+        log.info("start verify the user identity in realm: {}.", this.getClass().getSimpleName());
+        //前台出入参数一般为用户名和密码，将AuthenticationToken转换为UsernamePasswordToken
+        UsernamePasswordToken usernamePasswordToken = (UsernamePasswordToken) token;
         //获取用户的输入的账号.
-        String username = (String)token.getPrincipal();
-        System.out.println(token.getCredentials());
+        //String username = (String)token.getPrincipal();
+        String username = usernamePasswordToken.getUsername();
+        if(username == null || username.isEmpty())
+        {
+            log.error("the input is empty!");
+            throw new UnknownAccountException("the input is empty");
+        }
         //通过username从数据库中查找 User对象，如果找到，没找到.
         //实际项目中，这里可以根据实际情况做缓存，如果不做，Shiro自己也是有时间间隔机制，2分钟内不会重复执行该方法
         UserInfo userInfo = userInfoService.findByUsername(username);
-        System.out.println("----->>userInfo="+userInfo);
+        //根据用户信息判定登录情况
+
         if(userInfo == null){
-            return null;
+            log.error("user not exist.");
+            throw new UnknownAccountException("user not exist.");
         }
-        SimpleAuthenticationInfo authenticationInfo = new SimpleAuthenticationInfo(
-                userInfo, //用户名
-                userInfo.getPassword(), //密码
-                // ByteSource.Util.bytes(userInfo.getCredentialsSalt()),//salt=username+salt
-                getName()  //realm name
-        );
-        return authenticationInfo;
+        if (userInfo.getState().equals(UserStatus.LOCKED))
+        {
+            log.error("user is locked now.");
+            throw new LockedAccountException("user is locked now.");
+        }
+        // SimpleAuthenticationInfo authenticationInfo = new SimpleAuthenticationInfo(
+        //         userInfo, //用户名
+        //         userInfo.getPassword(), //密码
+        //         // ByteSource.Util.bytes(userInfo.getCredentialsSalt()),//salt=username+salt
+        //         getName()  //realm name
+        // );
+        return new SimpleAuthenticationInfo(userInfo, userInfo.getPassword(), getName());
     }
 
 }
