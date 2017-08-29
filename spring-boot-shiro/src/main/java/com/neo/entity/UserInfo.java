@@ -9,6 +9,7 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 @Data
 @NoArgsConstructor
@@ -59,8 +60,12 @@ public class UserInfo implements Serializable {
     @Column
     private int outDate;
 
-    @ElementCollection
-    private List<String> lockedIps; //用户在那些IP被锁定
+    @ElementCollection(fetch = FetchType.EAGER) //由于lockedIps只会每个ip出现一次，
+    // 所以应该用set，同时如果有多个list会有cannot simultaneously fetch multiple bags问题；
+    // 另外如果fetchType是lazy的话，会有JPA Lazy fetch not working and throwing
+    // lazyInitializationException
+    // @Fetch(FetchMode.SUBSELECT) 增加一个select而不用仅默认的left outer join，list不会有问题
+    private Set<String> lockedIps; //用户在那些IP被锁定
 
     // 最大同时在线数, 0表示不限制在线数
     @Column

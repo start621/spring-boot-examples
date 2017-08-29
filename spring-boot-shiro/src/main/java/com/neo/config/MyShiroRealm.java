@@ -53,12 +53,12 @@ public class MyShiroRealm extends AuthorizingRealm {
         //根据用户信息判定登录情况
 
         if(userInfo == null){
-            log.error("user not exist.");
+            log.error("user: [{}] not exist.", username);
             throw new UnknownAccountException("user not exist.");
         }
         if (userInfo.getState().equals(UserStatus.LOCKED))
         {
-            log.error("user is locked now.");
+            log.error("user: [{}] is locked now.", username);
             throw new LockedAccountException("user is locked now.");
         }
         // SimpleAuthenticationInfo authenticationInfo = new SimpleAuthenticationInfo(
