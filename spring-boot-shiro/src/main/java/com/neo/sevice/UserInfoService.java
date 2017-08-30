@@ -16,12 +16,12 @@ public interface UserInfoService {
     /**
      * 创建用户
      */
-    public UserInfo create(UserInfo userInfo);
+    public UserInfo create(UserInfo userInfo) throws Exception;
 
     /**
      * 批量创建
      */
-    public List<UserInfo> BatchCreate(List<UserInfo> users);
+    public List<UserInfo> BatchCreate(List<UserInfo> users) throws Exception;
 
     /**
      * 获取所有用户

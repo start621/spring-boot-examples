@@ -31,12 +31,13 @@ public class UserInfoServiceImpl implements UserInfoService {
 
     @Override
     @Transactional
-    public UserInfo create(UserInfo userInfo) {
+    public UserInfo create(UserInfo userInfo) throws Exception{
+
         return userInfoDao.save(userInfo);
     }
 
     @Override
-    public List<UserInfo> BatchCreate(List<UserInfo> users) {
+    public List<UserInfo> BatchCreate(List<UserInfo> users) throws Exception {
         return userInfoDao.save(users);
     }
 

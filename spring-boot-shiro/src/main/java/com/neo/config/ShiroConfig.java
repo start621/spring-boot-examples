@@ -1,5 +1,7 @@
 package com.neo.config;
 
+import org.apache.shiro.authc.credential.PasswordMatcher;
+import org.apache.shiro.authc.credential.PasswordService;
 import org.apache.shiro.mgt.SecurityManager;
 import org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor;
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
@@ -22,13 +24,13 @@ public class ShiroConfig {
 		//拦截器.
 		Map<String,String> filterChainDefinitionMap = new LinkedHashMap<String,String>();
 		// 配置不会被拦截的链接 顺序判断
-		// filterChainDefinitionMap.put("/userManagement/**", "anon");
+		filterChainDefinitionMap.put("/userManagement/**", "anon");
 		filterChainDefinitionMap.put("/static/**", "anon");
 		//配置退出 过滤器,其中的具体的退出代码Shiro已经替我们实现了
 		filterChainDefinitionMap.put("/logout", "logout");
 		//<!-- 过滤链定义，从上向下顺序执行，一般将/**放在最为下边 -->:这是一个坑呢，一不小心代码就不好使了;
 		//<!-- authc:所有url都必须认证通过才可以访问; anon:所有url都都可以匿名访问-->
-		filterChainDefinitionMap.put("/**", "authc");
+		// filterChainDefinitionMap.put("/**", "authc");
 		// filterChainDefinitionMap.put("/**", "anon");
 		// 如果不设置默认会自动寻找Web工程根目录下的"/login.jsp"页面
 		shiroFilterFactoryBean.setLoginUrl("/login");
@@ -47,6 +49,12 @@ public class ShiroConfig {
 	 * ）
 	 * @return
 	 */
+	@Bean
+	public PasswordMatcher myPasswordMatcher(){
+		PasswordMatcher passwordMatcher = new PasswordMatcher();
+		passwordMatcher.setPasswordService(myPasswordService());
+		return passwordMatcher;
+	}
 	// @Bean
 	// public HashedCredentialsMatcher hashedCredentialsMatcher(){
 	// 	HashedCredentialsMatcher hashedCredentialsMatcher = new HashedCredentialsMatcher();
@@ -55,10 +63,17 @@ public class ShiroConfig {
 	// 	return hashedCredentialsMatcher;
 	// }
 
+
+	@Bean
+	public PasswordService myPasswordService() {
+		return new MyPasswordService();
+	}
+
+
 	@Bean
 	public MyShiroRealm myShiroRealm(){
 		MyShiroRealm myShiroRealm = new MyShiroRealm();
-		// myShiroRealm.setCredentialsMatcher(hashedCredentialsMatcher());
+		myShiroRealm.setCredentialsMatcher(myPasswordMatcher());
 		return myShiroRealm;
 	}
 

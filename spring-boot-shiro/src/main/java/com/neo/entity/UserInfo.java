@@ -74,6 +74,8 @@ public class UserInfo implements Serializable {
     @Column
     private String validateCode; //验证码
 
+    @Column
+    private String salt;
     /**
      * 密码盐.
      * @return ddd

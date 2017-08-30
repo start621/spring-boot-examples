@@ -1,5 +1,7 @@
 package com.neo.web;
 
+import com.neo.common.CryptoUtil;
+import com.neo.config.MyPasswordService;
 import com.neo.entity.UserInfo;
 import com.neo.sevice.UserInfoService;
 import io.swagger.annotations.ApiOperation;
@@ -16,6 +18,9 @@ public class UserInfoController {
 
     @Autowired
     UserInfoService userService;
+
+    @Autowired
+    MyPasswordService passwordService;
     //// TODO: 2017/8/25 添加入参校验
     /**
      * 用户查询.
@@ -36,8 +41,22 @@ public class UserInfoController {
      */
     @ApiOperation(value = "批量创建用户接口")
     @RequestMapping(value = "/users", method = RequestMethod.POST)
-    public List<UserInfo> createUsers(@RequestBody List<UserInfo> userInfoList) {
-        return userService.BatchCreate(userInfoList);
+    public String createUsers(@RequestBody List<UserInfo> userInfoList) {
+        for (UserInfo user : userInfoList) {
+            try {
+                String salt = new String(CryptoUtil.generateSalt());
+                user.setSalt(salt);
+                passwordService.setSalt(salt.getBytes());
+                user.setPassword(passwordService.encryptPassword(user.getPassword()));
+                userService.create(user);
+            } catch (Exception e) {
+                log.error("batch create user failed for user: {}, caused by: {}",
+                        user.getUsername(), e.getMessage());
+                e.printStackTrace();
+                return "failed to create users.";
+            }
+        }
+        return "create users success.";
     }
 
     /**
@@ -58,7 +77,16 @@ public class UserInfoController {
     //@RequiresPermissions("userInfo:add")//权限管理;
     public String userInfoAdd(@RequestBody UserInfo userInfo){
         log.info("---> user add");
-        return userService.create(userInfo).getUsername();
+        UserInfo user = new UserInfo();
+        try {
+            user.setPassword(passwordService.encryptPassword(userInfo.getPassword()));
+            user = userService.create(user);
+        } catch (Exception e) {
+            log.error("create user failed, caused by: {}", e.getMessage());
+            e.printStackTrace();
+        }
+
+        return user.getUsername();
     }
 
     @ApiOperation(value = "用户信息修改")
