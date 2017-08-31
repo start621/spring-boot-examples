@@ -4,7 +4,7 @@ import com.neo.entity.UserInfo;
 import com.neo.entity.UserStatus;
 import com.neo.entity.UserType;
 import com.neo.sevice.UserInfoService;
-import com.neo.web.UserInfoController;
+import com.neo.web.UserInfoEndpoint;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -31,7 +31,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @WebAppConfiguration
-public class UserInfoControllerTests {
+public class UserInfoEndpointTests {
 
     // @Autowired
     // private UserInfoDao userInfoDao;
@@ -43,7 +43,7 @@ public class UserInfoControllerTests {
 
     @Before
     public void init() {
-        mockMvc = MockMvcBuilders.standaloneSetup(new UserInfoController()).build();
+        mockMvc = MockMvcBuilders.standaloneSetup(new UserInfoEndpoint()).build();
     }
 
     @Test

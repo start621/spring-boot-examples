@@ -3,6 +3,7 @@ package com.neo.config;
 import com.neo.common.CryptoUtil;
 import com.neo.sevice.UserInfoService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.codec.DecoderException;
 import org.apache.shiro.authc.credential.PasswordService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -31,13 +32,7 @@ public class MyPasswordService  implements PasswordService {
     @Override
     public String encryptPassword(Object plaintextPassword) throws IllegalArgumentException {
         log.debug("encrypt password with pbkdf2.");
-        String encryptPassword;
-        try {
-            encryptPassword = CryptoUtil.pbkdf2Encrypt((String) plaintextPassword, getSalt());
-        } catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
-            log.error("encrypt password failed, cause msg: {}", e.getMessage());
-            throw new IllegalArgumentException(e);
-        }
+        String encryptPassword = "";
         return encryptPassword;
     }
 
@@ -54,14 +49,16 @@ public class MyPasswordService  implements PasswordService {
     @Override
     public boolean passwordsMatch(Object submittedPlaintext, String encrypted) {
         log.debug("verity the password submitted.");
-        String encryptedSubmitted = "";
-        try {
-            encryptedSubmitted = CryptoUtil.pbkdf2Encrypt((String) submittedPlaintext, getSalt());
 
-        } catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
+        boolean result = false;
+        try {
+            result = CryptoUtil.validatePassword(new String((char[]) submittedPlaintext), encrypted);
+        } catch (DecoderException | NoSuchAlgorithmException | InvalidKeySpecException e) {
+            log.error("validate password failed, caused by: {}", e.getMessage());
             e.printStackTrace();
         }
-        return encryptedSubmitted.equals(encrypted);
+
+        return result;
     }
 
     public byte[] getSalt() {

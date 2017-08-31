@@ -11,7 +11,6 @@ import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.authz.SimpleAuthorizationInfo;
 import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
-import org.apache.shiro.util.ByteSource;
 
 import javax.annotation.Resource;
 
@@ -24,10 +23,10 @@ public class MyShiroRealm extends AuthorizingRealm {
         System.out.println("权限配置-->MyShiroRealm.doGetAuthorizationInfo()");
         SimpleAuthorizationInfo authorizationInfo = new SimpleAuthorizationInfo();
         UserInfo userInfo  = (UserInfo)principals.getPrimaryPrincipal();
-        for(Role role:userInfo.getRoleList()){
+        for (Role role : userInfo.getRoleList()) {
             authorizationInfo.addRole(role.getName());
-            for(Permission p:role.getPermissions()){
-                authorizationInfo.addStringPermission(p.getPrivilege());
+            for (Permission p : role.getPermissions()) {
+                authorizationInfo.addStringPermission(p.getPrivileges().iterator().next());
             }
         }
         return authorizationInfo;
@@ -68,8 +67,7 @@ public class MyShiroRealm extends AuthorizingRealm {
         //         // ByteSource.Util.bytes(userInfo.getCredentialsSalt()),//salt=username+salt
         //         getName()  //realm name
         // );
-        return new SimpleAuthenticationInfo(userInfo, userInfo.getPassword(),
-                ByteSource.Util.bytes(userInfo.getSalt()), getName());
+        return new SimpleAuthenticationInfo(userInfo, userInfo.getPassword(), getName());
     }
 
 }

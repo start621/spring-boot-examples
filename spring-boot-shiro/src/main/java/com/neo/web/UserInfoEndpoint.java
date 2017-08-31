@@ -1,7 +1,6 @@
 package com.neo.web;
 
 import com.neo.common.CryptoUtil;
-import com.neo.config.MyPasswordService;
 import com.neo.entity.UserInfo;
 import com.neo.sevice.UserInfoService;
 import io.swagger.annotations.ApiOperation;
@@ -14,13 +13,11 @@ import java.util.List;
 @Slf4j
 @RestController
 @RequestMapping("/userManagement")
-public class UserInfoController {
+public class UserInfoEndpoint {
 
     @Autowired
     UserInfoService userService;
 
-    @Autowired
-    MyPasswordService passwordService;
     //// TODO: 2017/8/25 添加入参校验
     /**
      * 用户查询.
@@ -44,10 +41,7 @@ public class UserInfoController {
     public String createUsers(@RequestBody List<UserInfo> userInfoList) {
         for (UserInfo user : userInfoList) {
             try {
-                String salt = new String(CryptoUtil.generateSalt());
-                user.setSalt(salt);
-                passwordService.setSalt(salt.getBytes());
-                user.setPassword(passwordService.encryptPassword(user.getPassword()));
+                user.setPassword(CryptoUtil.passwordEncrypt(user.getPassword()));
                 userService.create(user);
             } catch (Exception e) {
                 log.error("batch create user failed for user: {}, caused by: {}",
@@ -77,9 +71,9 @@ public class UserInfoController {
     //@RequiresPermissions("userInfo:add")//权限管理;
     public String userInfoAdd(@RequestBody UserInfo userInfo){
         log.info("---> user add");
-        UserInfo user = new UserInfo();
+        UserInfo user = userInfo;
         try {
-            user.setPassword(passwordService.encryptPassword(userInfo.getPassword()));
+            user.setPassword(CryptoUtil.passwordEncrypt(userInfo.getPassword()));
             user = userService.create(user);
         } catch (Exception e) {
             log.error("create user failed, caused by: {}", e.getMessage());

@@ -1,6 +1,8 @@
 package com.neo;
 
 import com.neo.common.CryptoUtil;
+import lombok.extern.slf4j.Slf4j;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -12,12 +14,20 @@ import org.springframework.test.context.junit4.SpringRunner;
  * @author yh
  * @since 0.0.1 2017-08-30 22:51
  */
-
+@Slf4j
 @RunWith(SpringRunner.class)
 public class CryptoUtilTests {
-    private String salt;
+
     @Test
-    public void test(){
-        salt = new String(CryptoUtil.generateSalt());
+    public void test() throws Exception {
+        String salt = new String(CryptoUtil.generateSalt());
+
+        String password = "123456";
+
+        String encryptText = CryptoUtil.passwordEncrypt(password);
+
+        boolean result = CryptoUtil.validatePassword(password, encryptText);
+
+        Assert.assertTrue(result);
     }
 }
