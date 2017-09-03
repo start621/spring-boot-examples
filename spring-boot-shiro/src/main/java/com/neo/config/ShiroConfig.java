@@ -10,6 +10,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.handler.SimpleMappingExceptionResolver;
 
+import javax.servlet.Filter;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -21,11 +22,18 @@ public class ShiroConfig {
 		System.out.println("ShiroConfiguration.shirFilter()");
 		ShiroFilterFactoryBean shiroFilterFactoryBean = new ShiroFilterFactoryBean();
 		shiroFilterFactoryBean.setSecurityManager(securityManager);
+
+		Map<String, Filter> filterMap = new LinkedHashMap<>();
+		filterMap.put("authc", new CaptchaFormAuthenticationFilter());
+
 		//拦截器.
-		Map<String,String> filterChainDefinitionMap = new LinkedHashMap<String,String>();
+		Map<String, String> filterChainDefinitionMap = new LinkedHashMap<>();
 		// 配置不会被拦截的链接 顺序判断
-		filterChainDefinitionMap.put("/userManagement/**", "anon");
+		// filterChainDefinitionMap.put("/userManagement/**", "anon");
+		filterChainDefinitionMap.put("/userInfoDel", "roles[admin]");
+		filterChainDefinitionMap.put("/userInfo", "perms[users:read]");
 		filterChainDefinitionMap.put("/static/**", "anon");
+		filterChainDefinitionMap.put("/captcha", "anon");
 		//配置退出 过滤器,其中的具体的退出代码Shiro已经替我们实现了
 		filterChainDefinitionMap.put("/logout", "logout");
 		//<!-- 过滤链定义，从上向下顺序执行，一般将/**放在最为下边 -->:这是一个坑呢，一不小心代码就不好使了;
@@ -38,6 +46,7 @@ public class ShiroConfig {
 
 		//未授权界面;
 		shiroFilterFactoryBean.setUnauthorizedUrl("/403");
+		shiroFilterFactoryBean.setFilters(filterMap);
 		shiroFilterFactoryBean.setFilterChainDefinitionMap(filterChainDefinitionMap);
 		return shiroFilterFactoryBean;
 	}
@@ -46,7 +55,7 @@ public class ShiroConfig {
 	 * 凭证匹配器
 	 * （由于我们的密码校验交给Shiro的SimpleAuthenticationInfo进行处理了
 	 * ）
-	 * @return
+	 * @return 返回对应的密码校验器
 	 */
 	@Bean
 	public PasswordMatcher myPasswordMatcher(){
@@ -76,6 +85,11 @@ public class ShiroConfig {
 		return myShiroRealm;
 	}
 
+	// @Bean
+	// public CaptchaFormAuthenticationFilter myAuthcFilter() {
+	// 	return  new CaptchaFormAuthenticationFilter();
+	// }
+
 
 	@Bean
 	public SecurityManager securityManager(){
@@ -88,8 +102,8 @@ public class ShiroConfig {
 	/**
 	 *  开启shiro aop注解支持.
 	 *  使用代理方式;所以需要开启代码支持;
-	 * @param securityManager
-	 * @return
+	 * @param securityManager securityManager
+	 * @return AuthorizationAttributeSourceAdvisor
 	 */
 	@Bean
 	public AuthorizationAttributeSourceAdvisor authorizationAttributeSourceAdvisor(SecurityManager securityManager){

@@ -9,6 +9,11 @@
 <form action="" method="post">
     <p>账号：<input type="text" name="username" value="admin"/></p>
     <p>密码：<input type="text" name="password" value="123456"/></p>
+
+    <!-- <img alt="这是图片" src="/img/001.png"/> -->
+    <img alt="验证码" onclick="this.src='/captcha?d='+new Date()*1" src="/captcha"/>
+
+    <p>验证码<input type="text" name="verifyCode"/></p>
     <p><input type="submit" value="登录"/></p>
 </form>
 </body>

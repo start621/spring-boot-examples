@@ -25,9 +25,16 @@
 		<swagger.version>2.2.2</swagger.version>
 		<guava.version>21.0</guava.version>
         <codec.version>1.10</codec.version>
+        <kaptcha.version>2.3.2</kaptcha.version>
 	</properties>
 
 	<dependencies>
+        <!-- https://mvnrepository.com/artifact/com.github.penggle/kaptcha -->
+        <dependency>
+            <groupId>com.github.penggle</groupId>
+            <artifactId>kaptcha</artifactId>
+            <version>${kaptcha.version}</version>
+        </dependency>
         <!-- https://mvnrepository.com/artifact/commons-codec/commons-codec -->
         <dependency>
             <groupId>commons-codec</groupId>

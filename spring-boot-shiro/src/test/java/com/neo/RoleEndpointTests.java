@@ -4,7 +4,6 @@ import com.neo.entity.Permission;
 import com.neo.entity.Role;
 import com.neo.sevice.PermissionService;
 import com.neo.sevice.RoleService;
-import com.neo.web.RoleEndpoint;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -13,9 +12,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.context.WebApplicationContext;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,19 +33,23 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
+@WebAppConfiguration
 public class RoleEndpointTests {
 
     @Autowired
     private RoleService roleService;
     @Autowired
     private PermissionService permissionService;
+    @Autowired
+    private WebApplicationContext webApplicationContext;
+
 
     private MockMvc mockMvc;
     private static final String BASE_PATH = "/userManagement/roles";
 
     @Before
     public void init() {
-        mockMvc = MockMvcBuilders.standaloneSetup(new RoleEndpoint()).build();
+        mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
     }
 
     @Test

@@ -7,7 +7,6 @@ import lombok.RequiredArgsConstructor;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.List;
 import java.util.Set;
 
 @Data
@@ -31,9 +30,8 @@ public class Permission implements Serializable {
     @ElementCollection(fetch = FetchType.EAGER)
     private Set<String> privileges; //权限字符串, module:action_type, menu例子：role:*，button例子：role:create,role:update,role:delete,role:view
 
-    @ManyToMany
-    @JoinTable(name="role_permission",joinColumns={@JoinColumn(name="permission_id")},inverseJoinColumns={@JoinColumn(name="role_id")})
-    private List<Role> roles;
+    // @ManyToMany(mappedBy = "permissions")
+    // private List<Role> roles;
 
     private Long parentId; //父编号
     private String parentIds; //父编号列表

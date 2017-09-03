@@ -2,7 +2,6 @@ package com.neo;
 
 import com.neo.entity.Permission;
 import com.neo.sevice.PermissionService;
-import com.neo.web.PermissionEndpoint;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -11,9 +10,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.context.WebApplicationContext;
 
 import java.util.Set;
 import java.util.TreeSet;
@@ -30,31 +31,35 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
+@WebAppConfiguration
 public class PermissionEndpointTests {
 
     @Autowired
     private PermissionService permissionService;
+
+    @Autowired
+    private WebApplicationContext webApplicationContext;
 
     private MockMvc mockMvc;
     private static final String BASE_PATH = "/userManagement/permissions";
 
     @Before
     public void init() {
-        mockMvc = MockMvcBuilders.standaloneSetup(new PermissionEndpoint()).build();
+        mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
     }
 
     @Test
     public void testAddPermission() throws Exception {
         Set<String> privileges = new TreeSet<>();
+
         privileges.add("admin:*");
         privileges.add("test:get");
         Permission permission = new Permission("user", "/users/**", privileges);
         permissionService.create(permission);
 
-        Assert.assertSame(1L, permissionService.count());
-
         mockMvc.perform(MockMvcRequestBuilders.get(BASE_PATH).accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
+        Assert.assertSame(1L, permissionService.count());
     }
 
     // @After

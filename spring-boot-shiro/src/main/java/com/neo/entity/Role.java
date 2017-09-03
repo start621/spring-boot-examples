@@ -34,10 +34,8 @@ public class Role {
             inverseJoinColumns={@JoinColumn(name="permission_id")})
     private List<Permission> permissions;
 
-    // 用户 - 角色关系定义;
-    @ManyToMany
-    @JoinTable(name="user_role",joinColumns={@JoinColumn(name="role_id")},
-            inverseJoinColumns={@JoinColumn(name="user_id")})
-    private List<UserInfo> userInfos;// 一个角色对应多个用户
+    // 用户 - 角色关系定义;  todo 是否需要双向关联,要么直接去掉，要么通过修改toString()方法防止递归调用
+    // @ManyToMany(mappedBy = "roleList")
+    // private List<UserInfo> userInfos;// 一个角色对应多个用户
 
 }
