@@ -21,6 +21,8 @@ public class Permission implements Serializable {
     @Column(nullable = false, unique = true)
     private String name;//名称.
 
+    private String description;//描述
+
     //@Column(columnDefinition="enum('menu','button')")
     //private String resourceType;//资源类型，[menu|button], 对应页面上的类型view或者button
     @NonNull
