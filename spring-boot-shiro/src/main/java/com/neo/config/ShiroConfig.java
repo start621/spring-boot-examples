@@ -53,7 +53,12 @@ public class ShiroConfig {
         //todo 1.对于权限的配置增加缓存 2.可以增加动态配置功能，从数据库中灵活读取配置，完全通过perms过滤器实现对资源的rest接口的控制，可以通过roles过滤器实现对页面的一些控制
         filterChainDefinitionMap.put("/userInfoDel", "roles[admin]");
         filterChainDefinitionMap.put("/userInfo", "perms[users:read]");
-        filterChainDefinitionMap.put("/static/**", "anon");
+        // filterChainDefinitionMap.put("/static/**", "anon");
+        filterChainDefinitionMap.put("/assets/**", "anon");
+        filterChainDefinitionMap.put("/css/**", "anon");
+        filterChainDefinitionMap.put("/fonts/**", "anon");
+        filterChainDefinitionMap.put("/js/**", "anon");
+        filterChainDefinitionMap.put("/lib/**", "anon");
         filterChainDefinitionMap.put("/captcha", "anon");
         //配置退出 过滤器,其中的具体的退出代码Shiro已经替我们实现了
         filterChainDefinitionMap.put("/logout", "logout");
