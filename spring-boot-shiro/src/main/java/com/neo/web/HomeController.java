@@ -7,6 +7,8 @@ import org.apache.shiro.authc.UnknownAccountException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.imageio.ImageIO;
 import javax.servlet.ServletOutputStream;
@@ -14,6 +16,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 @Slf4j
@@ -77,52 +80,42 @@ public class HomeController {
         return"/index";
     }
 
-    @RequestMapping("/login")
-    public String login(HttpServletRequest request, Map<String, Object> map) throws Exception{
-        log.info("login controller stared, {}", this.getClass().getSimpleName());
-        // 登录失败从request中获取shiro处理的异常信息。
-        // shiroLoginFailure:就是shiro异常类的全类名.
-        String exception = (String) request.getAttribute("shiroLoginFailure");
-        log.info("exception=" + exception);
-        String msg = "";
-        if (exception != null) {
-            if (UnknownAccountException.class.getName().equals(exception)) {
-                log.error("UnknownAccountException -- > 账号不存在：");
-                msg = "UnknownAccountException -- > 账号不存在：";
-            } else if (IncorrectCredentialsException.class.getName().equals(exception)) {
-                log.error("IncorrectCredentialsException -- > 密码不正确：");
-                msg = "IncorrectCredentialsException -- > 密码不正确：";
-            } else if ("kaptchaValidateFailed".equals(exception)) {
-                log.error("kaptchaValidateFailed -- > 验证码错误");
-                msg = "kaptchaValidateFailed -- > 验证码错误";
-            } else {
-                msg = "else >> "+exception;
-                log.error("else -- >" + exception);
-            }
-        }
-        map.put("msg", msg);
-        // 此方法不处理登录成功,由shiro进行处理
+    @RequestMapping(value = "/login", method = RequestMethod.GET)
+    public String login() {
         return "/login";
     }
 
-    @RequestMapping("/userInfoAdd")
-    public String userAdd(HttpServletRequest request, Map<String, Object> map) throws Exception {
-        log.info("add user controller stared, {}", this.getClass().getSimpleName());
+    @RequestMapping(value = "/login", method = RequestMethod.POST)
+    @ResponseBody
+    public Map<String, Object> login(HttpServletRequest request) throws Exception {
+        log.info("login controller stared, {}", this.getClass().getSimpleName());
+        Map<String, Object> resultMap = new LinkedHashMap<>();
 
-        return "/userInfoAdd";
-    }
+        resultMap.put("status", 200);
+        resultMap.put("message", "登录成功");
+        // 登录失败从request中获取shiro处理的异常信息.
+        // shiroLoginFailure:就是shiro异常类的全类名.
+        String exception = (String) request.getAttribute("shiroLoginFailure");
+        log.info("exception=" + exception);
 
-    @RequestMapping("/userInfoDel")
-    public String userDel(HttpServletRequest request, Map<String, Object> map) throws Exception {
-        log.info("delete user controller stared, {}", this.getClass().getSimpleName());
-        return "/userInfoDel";
-    }
+        if (exception != null) {
+            if (UnknownAccountException.class.getName().equals(exception)) {
+                log.error("UnknownAccountException -- > 认证失败");
+                resultMap.put("status", 500);
+                resultMap.put("message", "认证失败");
+            } else if (IncorrectCredentialsException.class.getName().equals(exception)) {
+                log.error("IncorrectCredentialsException -- > 密码不正确");
+                resultMap.put("status", 500);
+                resultMap.put("message", "密码不正确");
+            } else {
+                log.error("else -- >" + exception);
+                resultMap.put("status", 500);
+                resultMap.put("message", exception);
+            }
+        }
 
-    @RequestMapping("/userInfo")
-    public String userInfo(HttpServletRequest request, Map<String, Object> map) throws Exception {
-        log.info("get all user controller stared, {}", this.getClass().getSimpleName());
-
-        return "/userInfo";
+        // 此方法不处理登录成功,由shiro进行处理
+        return resultMap;
     }
 
     @RequestMapping("/403")

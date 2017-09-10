@@ -1,19 +1,76 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <title>首页</title>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <title>Radiance. 后台管理系统 | 首页</title>
+    <link rel="stylesheet" href="../static/assets/css/dpl-min.css" th:href="@{/assets/css/dpl-min.css}"/>
+    <link rel="stylesheet" href="../static/assets/css/bui-min.css" th:href="@{/assets/css/bui-min.css}"/>
+    <link rel="stylesheet" href="../static/assets/css/main.css" th:href="@{/assets/css/main.css}"/>
 </head>
 <body>
+<div class="header">
+    <div class="dl-title">
+        <a href="https://start621.github.io" title="Radiance. blog" target="_blank">
+            <span class="lp-title-port">Radiance.</span>
+            <span class="lp-title-port"> 后台管理系统</span>
+        </a>
+    </div>
+    <div class="dl-log">
+        您好，欢迎登录！
+        <a href="/logout" title="退出系统" class="dl-log-quit">[退出]</a>
+    </div>
+</div>
+<div class="content">
+    <div class="dl-main-nav">
+        <ul id="J_Nav" class="nav-list ks-clear">
+            <li class="nav-item dl-selected">
+                <div class="nav-item-inner nv-storage">系统管理</div>
+            </li>
+        </ul>
+    </div>
+    <ul id="J_NavContent" class="dl-tab-content"></ul>
+</div>
+
+<script type="text/javascript" src="../static/assets/js/jquery-1.8.1.min.js"
+        th:src="@{/assets/js/jquery-1.8.1.min.js}"></script>
+<script type="text/javascript" src="../static/lib/layer/1.9.3/layer.js" th:src="@{/lib/layer/1.9.3/layer.js}"></script>
+<script type="text/javascript" src="../static/assets/js/bui-min.js" th:src="@{/assets/js/bui-min.js}"></script>
+<script type="text/javascript" src="../static/assets/js/config-min.js" th:src="@{/assets/js/config-min.js}"></script>
+<script type="text/javascript" src="../static/js/barrage.js" th:src="@{/js/barrage.js}"></script>
+<script>
+    BUI.use('common/main', function () {
+        var config = [{
+            id: 'system',
+            menu: [{
+                text: '系统管理',
+                items: [
+                    {id: 'yhgl', text: '用户管理', href: '/userManagement/userPage'},
+                    {id: 'qxgl', text: '权限点管理', href: '/permission/permissionPage'},
+                    {id: 'jsgl', text: '角色管理', href: '/role/rolePage'},
+                    {id: 'csqxgl', text: '权限点初始化', href: '/permission/permissionInitPage'},
+                    {id: 'zxyhgl', text: '在线用户管理', href: '/userManagement/onlineUserPage'},
+                    {id: 'qxcsym', text: '权限测试页面', href: '/userManagement/userInfoDel'},
+                    {id: 'rjk', text: 'Redis监控', href: '/redisMonitor'},
+                    {id: 'wjscxz', text: '文件上传下载', href: '/fileUpload'}
+                ]
+            }]
+        }];
+        new PageUtil.MainPage({
+            modulesConfig: config
+        });
+    });
+</script>
+
+
 <h1>index</h1>
 <p>
     <a href="/logout">logout</a>
     <br/>
-    <a href="/userInfo">userInfo</a>
+    <a href="/userInfo">/userManagement/userInfo</a>
     <br/>
-    <a href="/userInfoAdd">userInfoAdd</a>
+    <a href="/userInfoAdd">/userManagement/userInfoAdd</a>
     <br/>
-    <a href="/userInfoDel">userInfoDel</a>
+    <a href="/userInfoDel">/userManagement/userInfoDel</a>
     <br/>
     <a href="/fileUpload">fileUpload</a>
 </p>

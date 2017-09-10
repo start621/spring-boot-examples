@@ -22,7 +22,7 @@
 </head>
 
 <body bgcolor="#FFFFFF">
-错误信息：<h4 th:text="${msg}"></h4>
+<!--错误信息：<h4 th:text="${msg}"></h4>-->
     <div class="middle-box text-center loginscreen">
         <div>
             <div onclick="jumpToBlog();" class="animated animated bounceIn">
@@ -83,18 +83,17 @@
                 "password": password,
                 "verifyCode": verifyCode
             },
-            dataType: "json",
             url: "/login",
+            dataType: "json",
             success: function (result) {
                 if (result.status != 200) {
-                    swal("登录失败！", result.message);
+                    swal({title: "登录失败！", text: "认证失败，请检查输入信息！", type: "error"});
                 } else {
-                    swal({title:"登录成功！",text:"登录成功，进入系统！",type:"success"},
+                    swal({title: "登录成功！", text: "认证成功，进入系统！", type: "success"},
                     function () {
-                        location.href = "/index";
+                        window.location.href = "/index";
                     });
                 }
-
             }
         });
     }
