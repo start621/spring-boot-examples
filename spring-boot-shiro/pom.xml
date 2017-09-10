@@ -48,12 +48,12 @@
 			<groupId>org.crazycake</groupId>
 			<artifactId>shiro-redis</artifactId>
 			<version>2.4.2-RELEASE</version>
-			<exclusions>
-				<exclusion>
-					<artifactId>shiro-core</artifactId>
-					<groupId>org.apache.shiro</groupId>
-				</exclusion>
-			</exclusions>
+            <!--<exclusions>-->
+            <!--<exclusion>-->
+            <!--<artifactId>shiro-core</artifactId>-->
+            <!--<groupId>org.apache.shiro</groupId>-->
+            <!--</exclusion>-->
+            <!--</exclusions>-->
 		</dependency>
 		<!-- 引入shiro -->
 		<dependency>
@@ -116,11 +116,11 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-devtools</artifactId>
-			<optional>true</optional>
-		</dependency>
+        <!--<dependency>-->
+        <!--<groupId>org.springframework.boot</groupId>-->
+        <!--<artifactId>spring-boot-devtools</artifactId>-->
+        <!--<optional>true</optional>-->
+        <!--</dependency>-->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-actuator</artifactId>

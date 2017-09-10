@@ -6,13 +6,15 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.List;
 
 @Data
 @RequiredArgsConstructor
 @NoArgsConstructor
 @Entity
-public class Role {
+//注意加上序列化，不然redis中读取出来之后无法反序列化，报的invalid bulk length异常。。。
+public class Role implements Serializable {
 
     @Id
     @GeneratedValue

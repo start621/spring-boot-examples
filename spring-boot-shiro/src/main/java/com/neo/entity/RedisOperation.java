@@ -2,6 +2,8 @@ package com.neo.entity;
 
 import lombok.Data;
 
+import java.io.Serializable;
+
 /**
  * spring-boot-shiro-UserStatus
  * 用户状态
@@ -11,7 +13,7 @@ import lombok.Data;
  */
 
 @Data
-public class RedisOperation {
+public class RedisOperation implements Serializable {
 
     private long id;//slowlog唯一编号id
 
